@@ -2,6 +2,7 @@ const express = require("express");
 const stripe = require("./controllers/stripe");
 const app = express();
 const PORT = process.env.PORT || 3000;
+require("dotenv").config();
 
 const logRequestStart = (req, res, next) => {
   console.info(`${req.method} ${req.originalUrl} ${JSON.stringify(req.body)}`);
