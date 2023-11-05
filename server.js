@@ -14,6 +14,10 @@ app.use(logRequestStart);
 
 app.post("/api/payment", stripe.handlePayment);
 
+app.get("/asset/logo", function (req, res) {
+  res.sendFile("/assets/logo.png", { root: __dirname });
+});
+
 app.listen(PORT, () => {
   console.log(`Server in ascolto sulla porta ${PORT}`);
 });

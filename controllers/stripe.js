@@ -6,6 +6,7 @@ async function handlePayment(req, res) {
     console.log("[CONTROLLER][HANDLE-PAYMENT] start");
     const { email, name, phone } =
       req?.body?.data?.object?.charges?.data[0]?.billing_details;
+    const amount = req?.body?.data?.object?.amount;
     let ticket = "";
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -21,12 +22,12 @@ async function handlePayment(req, res) {
       Ticket: ticket,
       Phone: phone,
       Timestamp: formattedDate,
+      Amount: (amount / 100).toFixed(2),
     });
     const html = `
     <div style="width: 100%; text-align: center;">
-        <div>
-            Ecco il codice del tuo biglietto: <strong>${ticket.toUpperCase()}</strong>
-        </div>
+    <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
+    <br /><h2>Ticket:</h2> <h1>${ticket.toUpperCase()}</h1>
     </div>`;
     await sendEmail(email, "Ticket Ceramichine", html);
     console.log("[CONTROLLER][HANDLE-PAYMENT] end");
