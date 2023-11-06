@@ -7,10 +7,8 @@ async function handlePayment(req, res) {
     console.log(req.body);
     console.log(req.body.data.object);
     console.log("[CONTROLLER][HANDLE-PAYMENT] start");
-    const { email, name, phone } =
-      req?.body?.data?.object?.charges?.data[0]?.billing_details;
-    const { receipt_url } = req?.body?.data?.object?.charges?.data[0];
-    const amount = req?.body?.data?.object?.amount;
+    const { email, name, phone } = req?.body?.data?.object?.customer_details;
+    const amount = req?.body?.data?.object?.amount_total;
     const session = await stripe.checkout.sessions.retrieve(
       req?.body?.data?.object?.id,
       {
@@ -35,15 +33,12 @@ async function handlePayment(req, res) {
       Phone: phone,
       Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
-      Receipt: receipt_url,
-      Stripe_Event_ID: req?.body?.id,
     });
     const html = `
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
     <br /><h2>Ticket:</h2> <h1>${ticket.toUpperCase()}</h1>
     <h4>Ti aspettiamo all'evento! Conserve questa mail ed il codice del ticket.</h4>
-    <a href="${receipt_url}" download="Ricevuta di Pagamento">Ricevuta di pagamento</a>
     <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
