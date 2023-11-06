@@ -4,6 +4,7 @@ const airtable = require("../utils/airtable");
 
 async function handlePayment(req, res) {
   try {
+    console.log(req.body);
     console.log("[CONTROLLER][HANDLE-PAYMENT] start");
     const { email, name, phone } =
       req?.body?.data?.object?.charges?.data[0]?.billing_details;
