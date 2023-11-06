@@ -2,6 +2,7 @@ const express = require("express");
 const stripe = require("./controllers/stripe");
 const app = express();
 const PORT = process.env.PORT || 3000;
+const { authWebhookStripePaymenet } = require("./middlewares/auth");
 require("dotenv").config();
 
 const logRequestStart = (req, res, next) => {
@@ -12,7 +13,7 @@ const logRequestStart = (req, res, next) => {
 app.use(express.json());
 app.use(logRequestStart);
 
-app.post("/api/payment", stripe.handlePayment);
+app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
 
 app.get("/asset/logo", function (req, res) {
   res.sendFile("/assets/logo.png", { root: __dirname });
