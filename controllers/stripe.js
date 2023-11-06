@@ -18,6 +18,7 @@ async function handlePayment(req, res) {
     console.log("session :", session);
     console.log(session.line_items.data[0]);
     const quantity = session.line_items.data[0].quantity;
+    const event = session.line_items.data[0].description;
     console.log("Quantity: ", quantity);
     const product = await stripe.products.retrieve(
       session.line_items.data[0].price.product
@@ -40,9 +41,10 @@ async function handlePayment(req, res) {
       Phone: phone,
       Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
-      //Quantity: quantity,
-      //Where: where,
-      //When: when,
+      Quantity: quantity,
+      Event: event,
+      Where: where,
+      When: when,
     });
     const html = `
     <div style="width: 100%; text-align: center;">
