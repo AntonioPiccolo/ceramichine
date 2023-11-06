@@ -50,7 +50,9 @@ async function handlePayment(req, res) {
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
     <br /><h2>Ticket:</h2> <h1>${ticket.toUpperCase()}</h1>
-    <h4>Ti aspettiamo a ${where} il ${when}!</h4>
+    <h4>Ti aspettiamo!</h4>
+    <div><p>Dove: <h4>${where}</h4><p>
+    <p>Quando: <h4>${when}</h4><p></div>
     <div>Conserve questa mail ed il codice del ticket.</div>
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
