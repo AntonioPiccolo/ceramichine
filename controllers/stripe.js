@@ -9,9 +9,12 @@ async function handlePayment(req, res) {
       req?.body?.data?.object?.charges?.data[0]?.billing_details;
     const { receipt_url } = req?.body?.data?.object?.charges?.data[0];
     const amount = req?.body?.data?.object?.amount;
-    const session = await stripe.checkout.sessions.retrieve(id, {
-      expand: ["line_items"],
-    });
+    const session = await stripe.checkout.sessions.retrieve(
+      req?.body?.data?.object?.id,
+      {
+        expand: ["line_items"],
+      }
+    );
     console.log("session :", session);
     console.log(session.line_items.data[0]);
     let ticket = "";
