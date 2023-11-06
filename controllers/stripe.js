@@ -1,3 +1,4 @@
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const sendEmail = require("../utils/sendEmail");
 const airtable = require("../utils/airtable");
 
@@ -8,6 +9,8 @@ async function handlePayment(req, res) {
       req?.body?.data?.object?.charges?.data[0]?.billing_details;
     const { receipt_url } = req?.body?.data?.object?.charges?.data[0];
     const amount = req?.body?.data?.object?.amount;
+    const product = await stripe.products.retrieve(req?.body?.data?.object?.id);
+    console.log("PRODUCT :", product);
     let ticket = "";
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
