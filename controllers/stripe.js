@@ -41,7 +41,7 @@ async function handlePayment(req, res) {
       Phone: phone,
       Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
-      Quantity: quantity,
+      Quantity: quantity.toString(),
       Event: event,
       Where: where,
       When: when,
