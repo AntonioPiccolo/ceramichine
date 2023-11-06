@@ -15,12 +15,7 @@ app.use(bodyParser.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(logRequestStart);
 
-app.post(
-  "/api/payment",
-  authWebhookStripePaymenet,
-  express.raw({ type: "application/json" }),
-  stripe.handlePayment
-);
+app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
 
 app.get("/asset/logo", function (req, res) {
   res.sendFile("/assets/logo.png", { root: __dirname });
