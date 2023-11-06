@@ -25,7 +25,7 @@ module.exports = async function sendEmail(to, subject, html) {
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport(emailTransport);
     await transporter.sendMail({
-      from: "Ceramichine <noreply@liftland.it>",
+      from: "Ceramichine <noreply@ceramichine.com>",
       to,
       subject,
       html,

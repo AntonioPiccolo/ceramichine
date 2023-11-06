@@ -31,7 +31,7 @@ async function handlePayment(req, res) {
     <br />
     <h4>Ti aspettiamo all'evento! Conserve questa mail ed il codice del ticket.</h4>
     <br />
-    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto scrivici pure attraverso l'account <link href="https://www.instagram.com/ceramichine_/">instagram</link></i></div>
+    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
     await sendEmail(email, "Ticket Ceramichine", html);
     console.log("[CONTROLLER][HANDLE-PAYMENT] end");
