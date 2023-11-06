@@ -17,6 +17,11 @@ async function handlePayment(req, res) {
     );
     console.log("session :", session);
     console.log(session.line_items.data[0]);
+    const quantity = session.line_items.data[0].quantity;
+    const product = await stripe.products.retrieve(
+      session.line_items.data[0].price.product
+    );
+    console.log("PRODUCT: ", product);
     let ticket = "";
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -33,13 +38,13 @@ async function handlePayment(req, res) {
       Phone: phone,
       Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
+      Quantity: quantity,
     });
     const html = `
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
     <br /><h2>Ticket:</h2> <h1>${ticket.toUpperCase()}</h1>
     <h4>Ti aspettiamo all'evento! Conserve questa mail ed il codice del ticket.</h4>
-    <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
     await sendEmail(email, "Ticket Ceramichine", html);
