@@ -19,7 +19,7 @@ async function handlePayment(req, res) {
     await airtable.create("payments", {
       Email: email,
       Name: name,
-      Ticket: ticket,
+      Ticket: ticket.toUpperCase(),
       Phone: phone,
       Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
