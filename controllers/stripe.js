@@ -18,10 +18,12 @@ async function handlePayment(req, res) {
     console.log("session :", session);
     console.log(session.line_items.data[0]);
     const quantity = session.line_items.data[0].quantity;
+    console.log("Quantity: ", quantity);
     const product = await stripe.products.retrieve(
       session.line_items.data[0].price.product
     );
     console.log("PRODUCT: ", product);
+    const { when, where } = product.metadata;
     let ticket = "";
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -38,7 +40,9 @@ async function handlePayment(req, res) {
       Phone: phone,
       Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
-      Quantity: quantity,
+      //Quantity: quantity,
+      //Where: where,
+      //When: when,
     });
     const html = `
     <div style="width: 100%; text-align: center;">
