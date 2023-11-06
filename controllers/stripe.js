@@ -31,7 +31,6 @@ async function handlePayment(req, res) {
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
     <br /><h2>Ticket:</h2> <h1>${ticket.toUpperCase()}</h1>
-    <br />
     <h4>Ti aspettiamo all'evento! Conserve questa mail ed il codice del ticket.</h4>
     <a href="${receipt_url}" download="Ricevuta di Pagamento">Ricevuta di pagamento</a>
     <br />
