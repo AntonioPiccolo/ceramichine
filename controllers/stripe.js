@@ -6,8 +6,7 @@ async function handlePayment(req, res) {
     console.log("[CONTROLLER][HANDLE-PAYMENT] start");
     const { email, name, phone } =
       req?.body?.data?.object?.charges?.data[0]?.billing_details;
-    const { receipt_url } =
-      req?.body?.data?.object?.charges?.data[0]?.billing_details;
+    const { receipt_url } = req?.body?.data?.object?.charges?.data[0];
     const amount = req?.body?.data?.object?.amount;
     let ticket = "";
     const characters =
