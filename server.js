@@ -1,8 +1,8 @@
 const express = require("express");
 const stripe = require("./controllers/stripe");
-const app = express();
 const PORT = process.env.PORT || 3000;
 const { authWebhookStripePaymenet } = require("./middlewares/auth");
+const bodyParser = require("body-parser");
 require("dotenv").config();
 
 const logRequestStart = (req, res, next) => {
@@ -10,6 +10,8 @@ const logRequestStart = (req, res, next) => {
   next();
 };
 
+const app = express();
+app.use(bodyParser.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(logRequestStart);
 
