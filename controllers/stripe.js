@@ -36,6 +36,12 @@ async function handlePayment(req, res) {
     console.log("[CONTROLLER][HANDLE-PAYMENT] start");
     const { email, name, phone } = req?.body?.data?.object?.customer_details;
     const amount = req?.body?.data?.object?.amount_total;
+    const session = await stripe.checkout.sessions.retrieve(
+      req?.body?.data?.object?.id,
+      {
+        expand: ["line_items"],
+      }
+    );
     console.log("session :", session);
     console.log(session.line_items.data[0]);
     const quantity = session.line_items.data[0].quantity;
@@ -107,66 +113,6 @@ async function handlePayment(req, res) {
   } catch (err) {
     console.error("[CONTROLLER][HANDLE-PAYMENT] error", err);
     res.status(500).send({ message: "error" });
-  }
-}
-
-async function handleGiftCard(req, res) {
-  try {
-    console.log(req.body);
-    console.log(req.body.data.object);
-    console.log("[CONTROLLER][HANDLE-GIFT-CARD] start");
-    const { email, name, phone } = req?.body?.data?.object?.customer_details;
-    const amount = req?.body?.data?.object?.amount_total;
-    const session = await stripe.checkout.sessions.retrieve(
-      req?.body?.data?.object?.id,
-      {
-        expand: ["line_items"],
-      }
-    );
-    console.log("session :", session);
-    console.log(session.line_items.data[0]);
-    const quantity = session.line_items.data[0].quantity;
-    const event = session.line_items.data[0].description;
-    console.log("Quantity: ", quantity);
-    /*
-    const product = await stripe.products.retrieve(
-      session.line_items.data[0].price.product
-    );
-    console.log("PRODUCT: ", product);
-    const { when, where } = product.metadata;
-    */
-    let ticket = "";
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (let i = 0; i < 4; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      ticket += characters.charAt(randomIndex);
-    }
-    const date = new Date(); // Replace with your date
-    const formattedDate = date.toISOString().split("T")[0];
-    await airtable.create("gift-card", {
-      Email: email,
-      Name: name,
-      Ticket: ticket.toUpperCase(),
-      Phone: phone,
-      Timestamp: formattedDate,
-      Amount: (amount / 100).toFixed(2),
-      Quantity: quantity.toString(),
-      Event: event,
-    });
-    const html = `
-    <div style="width: 100%; text-align: center;">
-    <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
-    <br /><h2>GIFT-CARD:</h2> <h1>${ticket.toUpperCase()}</h1>
-    <div>Ricordati di inoltrare questa email al/alla fortunato/a che riceverà il regalo!</div>
-    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
-    </div>`;
-    await sendEmail(email, "Gift-Card Ceramichine", html);
-    console.log("[CONTROLLER][HANDLE-GIFT-CARD] end");
-    return res.send({ message: "ok" });
-  } catch (err) {
-    console.error("[CONTROLLER][HANDLE-GIFT-CARD] error", err);
-    return res.status(500).send({ message: "error" });
   }
 }
 
