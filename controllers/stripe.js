@@ -78,8 +78,8 @@ async function handlePayment(req, res) {
         Where: where,
         When: when,
       });
-      if (x > 0) tickets += `${ticket.toUpperCase()}, `;
-      else tickets += `${ticket.toUpperCase()}`;
+      if (x === 0 && quantity === 1) tickets += `${ticket.toUpperCase()}`;
+      else tickets += `${ticket.toUpperCase()}, `;
     }
     await airtable.create("payments", {
       Email: email,
