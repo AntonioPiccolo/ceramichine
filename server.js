@@ -16,7 +16,6 @@ app.use(express.json());
 app.use(logRequestStart);
 
 app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
-app.post("/api/giftcard", authWebhookStripePaymenet, stripe.handleGiftCard);
 
 app.get("/asset/logo", function (req, res) {
   res.sendFile("/assets/logo.png", { root: __dirname });
