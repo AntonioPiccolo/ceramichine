@@ -32,6 +32,8 @@ async function handlePayment(req, res) {
     console.log(req.body.data.object);
     console.log("[CONTROLLER][HANDLE-PAYMENT] start");
     const { email, name, phone } = req?.body?.data?.object?.customer_details;
+    const { city, country, line1, line2, postal_code, state } =
+      req?.body?.data?.object?.customer_details.address;
     const amount = req?.body?.data?.object?.amount_total;
     const session = await stripe.checkout.sessions.retrieve(
       req?.body?.data?.object?.id,
@@ -40,10 +42,9 @@ async function handlePayment(req, res) {
       }
     );
     console.log("session :", session);
+    let fiscalCode = "";
     for (const field of session.custom_fields) {
-      console.log(field);
-      console.log(field.label);
-      console.log(field.text);
+      if (field.key === "codicefiscale") fiscalCode = field.text.value;
     }
     // const fiscalCode = session.custom_fields[0];
     console.log(session.line_items.data[0]);
@@ -77,17 +78,25 @@ async function handlePayment(req, res) {
         Where: where,
         When: when,
       });
-      tickets += `${ticket.toUpperCase()}, `;
+      if (x > 0) tickets += `${ticket.toUpperCase()}, `;
+      else tickets += `${ticket.toUpperCase()}`;
     }
     await airtable.create("payments", {
       Email: email,
       Name: name,
-      Codes: tickets,
       Phone: phone,
       Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
       Quantity: quantity.toString(),
+      FiscalCode: fiscalCode,
+      City: city,
+      Country: country,
+      Line: line1,
+      Line_2: line2,
+      PostCode: postal_code,
+      State: state,
       Event: event,
+      Codes: tickets,
       GiftCard: giftcard,
     });
     /*
