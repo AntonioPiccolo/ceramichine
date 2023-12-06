@@ -117,7 +117,7 @@ async function handlePayment(req, res) {
     <br /><h1>Ciao ${name.split(" ")[0]}</h1>
     <div>Grazie mille per il tuo acquisto!</div>
     <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare.</div>
-    <div>Vi aspettiamo a Ceramichine, a presto :)</div>
+    <div>Ci vediamo a Ceramichine, a presto :)</div>
     <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
