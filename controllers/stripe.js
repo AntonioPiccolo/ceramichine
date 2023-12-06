@@ -118,5 +118,4 @@ async function handlePayment(req, res) {
 
 module.exports = {
   handlePayment,
-  handleGiftCard,
 };
