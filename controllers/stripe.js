@@ -12,13 +12,13 @@ function getExpirationDate(date) {
       .setDate(now.getDate() + parseInt(date.split(" ")[0]))
       .toISOString()
       .split("T")[0];
-  } else if (date.includes("month")) {
+  } else if (date.includes("months")) {
     const now = new Date();
     return now
       .setMonth(now.getMonth() + parseInt(date.split(" ")[0]))
       .toISOString()
       .split("T")[0];
-  } else if (date.includes("year")) {
+  } else if (date.includes("years")) {
     const now = new Date();
     return now
       .setFullYear(now.getFullYear() + parseInt(date.split(" ")[0]))
