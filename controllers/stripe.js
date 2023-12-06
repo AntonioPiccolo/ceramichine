@@ -40,9 +40,15 @@ async function handlePayment(req, res) {
       }
     );
     console.log("session :", session);
+    for (const field of session.custom_fields){
+      console.log(field)
+      console.log(field.label)
+      console.log(field.text)
+    }
+    // const fiscalCode = session.custom_fields[0];
     console.log(session.line_items.data[0]);
     const quantity = session.line_items.data[0].quantity;
-    const event = session.line_items.data[0].description;
+    const event = se\ssion.line_items.data[0].description;
     console.log("Quantity: ", quantity);
     const product = await stripe.products.retrieve(
       session.line_items.data[0].price.product
@@ -99,9 +105,10 @@ async function handlePayment(req, res) {
     const html = `
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
-    <br /><h1>Ciao ${name}</h1>
+    <br /><h1>Ciao ${name.split(" ")[0]}</h1>
     <div>Grazie mille per il tuo acquisto! Vi aspettiamo a Ceramichine :)</div>
     <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare. A presto!</div>
+    <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
     await sendEmail(email, "CERAMICHINE - Gift Card", html);
