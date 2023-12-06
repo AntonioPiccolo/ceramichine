@@ -89,7 +89,7 @@ async function handlePayment(req, res) {
       Amount: (amount / 100).toFixed(2),
       Quantity: quantity.toString(),
       FiscalCode: fiscalCode,
-      City: city,
+      //City: city,
       //Country: country,
       //Line: line1,
       //Line_2: line2,
