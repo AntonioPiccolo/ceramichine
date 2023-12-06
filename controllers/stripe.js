@@ -9,18 +9,18 @@ function getExpirationDate(date) {
   if (date.includes("days")) {
     const now = new Date();
     const expDate = now.setDate(now.getDate() + parseInt(date.split(" ")[0]));
-    return expDate.toISOString().split("T")[0];
+    return new Date(expDate).toISOString().split("T")[0];
   } else if (date.includes("months")) {
     const now = new Date();
     const expDate = now.setMonth(now.getMonth() + parseInt(date.split(" ")[0]));
     console.log(expDate);
-    return expDate.toISOString().split("T")[0];
+    return new Date(expDate).toISOString().split("T")[0];
   } else if (date.includes("years")) {
     const now = new Date();
     const expDate = now.setFullYear(
       now.getFullYear() + parseInt(date.split(" ")[0])
     );
-    return expDate.toISOString().split("T")[0];
+    return new Date(expDate).toISOString().split("T")[0];
   } else {
     return new Date(date);
   }
