@@ -119,6 +119,17 @@ async function handlePayment(req, res) {
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
     await sendEmail(email, "CERAMICHINE - Gift Card", html);
+    await sendEmail(
+      "piccoloelena.work@gmail.com",
+      "CERAMICHINE - Acquisto",
+      `
+    <div style="width: 100%; text-align: center;">
+    <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
+    <br /><h1>Acquisto - ${event}</h1>
+    <div>${name} ha acquistato ${quantity} di ${event}</div>
+    <div>Email: ${email}</div>
+    </div>`
+    );
     console.log("[CONTROLLER][HANDLE-PAYMENT] end");
     return res.status(200).send();
   } catch (err) {
