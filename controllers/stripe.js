@@ -57,7 +57,7 @@ async function handlePayment(req, res) {
     console.log("PRODUCT: ", product);
     const { when, where, giftcard, expirationDate } = product.metadata;
     const date = new Date(); // Replace with your date
-    const formattedDate = date.toISOString().split("T")[0];
+    const formattedDate = date.toISOString();
     const expiration = expirationDate
       ? getExpirationDate(expirationDate)
       : undefined;
