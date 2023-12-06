@@ -115,8 +115,9 @@ async function handlePayment(req, res) {
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
     <br /><h1>Ciao ${name.split(" ")[0]}</h1>
-    <div>Grazie mille per il tuo acquisto! Vi aspettiamo a Ceramichine :)</div>
-    <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare. A presto!</div>
+    <div>Grazie mille per il tuo acquisto!</div>
+    <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare.</div>
+    <div>Vi aspettiamo a Ceramichine, a presto :)</div>
     <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
