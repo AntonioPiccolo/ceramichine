@@ -123,10 +123,10 @@ async function handlePayment(req, res) {
     </div>`;
     await sendEmail(email, "CERAMICHINE - Gift Card", html);
     console.log("[CONTROLLER][HANDLE-PAYMENT] end");
-    return res.status(200).send({ message: "ok" });
+    return res.status(200).send();
   } catch (err) {
     console.error("[CONTROLLER][HANDLE-PAYMENT] error", err);
-    return res.status(500).send({ message: "error" });
+    return res.status(500).send();
   }
 }
 
