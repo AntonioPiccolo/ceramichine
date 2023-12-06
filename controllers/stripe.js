@@ -1,4 +1,3 @@
-const moment = require("moment");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const sendEmail = require("../utils/sendEmail");
 const airtable = require("../utils/airtable");
@@ -58,7 +57,6 @@ async function handlePayment(req, res) {
     console.log("PRODUCT: ", product);
     const { when, where, giftcard, expirationDate } = product.metadata;
     const date = new Date(); // Replace with your date
-    const formattedDate = moment().format("YYYY-MM-DDTHH:mm:ss");
     const expiration = expirationDate
       ? getExpirationDate(expirationDate)
       : undefined;
@@ -74,7 +72,6 @@ async function handlePayment(req, res) {
         Name: name,
         Code: ticket.toUpperCase(),
         GiftCard: giftcard,
-        Timestamp: formattedDate,
         ExpirationDate: expiration,
         Where: where,
         When: when,
@@ -86,7 +83,6 @@ async function handlePayment(req, res) {
       Email: email,
       Name: name,
       Phone: phone,
-      Timestamp: formattedDate,
       Amount: (amount / 100).toFixed(2),
       Quantity: quantity.toString(),
       FiscalCode: fiscalCode,
