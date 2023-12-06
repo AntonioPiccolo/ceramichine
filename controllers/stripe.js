@@ -40,15 +40,15 @@ async function handlePayment(req, res) {
       }
     );
     console.log("session :", session);
-    for (const field of session.custom_fields){
-      console.log(field)
-      console.log(field.label)
-      console.log(field.text)
+    for (const field of session.custom_fields) {
+      console.log(field);
+      console.log(field.label);
+      console.log(field.text);
     }
     // const fiscalCode = session.custom_fields[0];
     console.log(session.line_items.data[0]);
     const quantity = session.line_items.data[0].quantity;
-    const event = se\ssion.line_items.data[0].description;
+    const event = session.line_items.data[0].description;
     console.log("Quantity: ", quantity);
     const product = await stripe.products.retrieve(
       session.line_items.data[0].price.product
