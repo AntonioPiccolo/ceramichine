@@ -186,7 +186,7 @@ const createAssociatonsToHubspot = async (
   fromObjectId,
   toObjectType,
   toObjectId,
-  label
+  label = null
 ) => {
   const typeObject = await retriveTypeObject(
     fromObjectType,
