@@ -69,7 +69,6 @@ async function handlePayment(req, res) {
         const randomIndex = Math.floor(Math.random() * CHARACTERS.length);
         ticket += CHARACTERS.charAt(randomIndex);
       }
-      /*
       await airtable.create("reservations", {
         Email: email,
         Name: name,
@@ -79,11 +78,9 @@ async function handlePayment(req, res) {
         Where: where,
         When: when,
       });
-      */
       if (x === quantity - 1) tickets += `${ticket.toUpperCase()}`;
       else tickets += `${ticket.toUpperCase()}, `;
     }
-    /*
     await airtable.create("payments", {
       Email: email,
       Name: name,
@@ -101,7 +98,6 @@ async function handlePayment(req, res) {
       Codes: tickets,
       GiftCard: giftcard,
     });
-    */
     /*
     const html = `
     <div style="width: 100%; text-align: center;">
@@ -114,7 +110,7 @@ async function handlePayment(req, res) {
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
     */
-    /* 
+
     const html = `
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
@@ -137,7 +133,7 @@ async function handlePayment(req, res) {
     <div>Email: ${email}</div>
     </div>`
     );
-    */
+
     let contact = await hubspot.searchFromHubspot("contacts", [
       {
         filters: [
