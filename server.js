@@ -11,7 +11,9 @@ const logRequestStart = (req, res, next) => {
 };
 
 const app = express();
-app.use(bodyParser.raw({ type: "application/json" }));
+if (process.env.NODE_ENV === "production") {
+  app.use(bodyParser.raw({ type: "application/json" }));
+}
 app.use(express.json());
 app.use(logRequestStart);
 

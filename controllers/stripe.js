@@ -1,6 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const sendEmail = require("../utils/sendEmail");
 const airtable = require("../utils/airtable");
+const hubspot = require("../utils/hubspot");
 
 const CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -28,12 +29,13 @@ function getExpirationDate(date) {
 
 async function handlePayment(req, res) {
   try {
+    console.log("BODY: ", req.body);
     console.log(req.body);
     console.log(req.body.data.object);
     console.log("[CONTROLLER][HANDLE-PAYMENT] start");
     const { email, name, phone } = req?.body?.data?.object?.customer_details;
     const { city, country, line1, line2, postal_code, state } =
-      req?.body?.data?.object?.customer_details.address;
+      req?.body?.data?.object?.customer_details?.address;
     const amount = req?.body?.data?.object?.amount_total;
     const session = await stripe.checkout.sessions.retrieve(
       req?.body?.data?.object?.id,
@@ -56,7 +58,7 @@ async function handlePayment(req, res) {
     );
     console.log("PRODUCT: ", product);
     const { when, where, giftcard, expirationDate } = product.metadata;
-    const date = new Date(); // Replace with your date
+    const date = new Date();
     const expiration = expirationDate
       ? getExpirationDate(expirationDate)
       : undefined;
@@ -67,6 +69,7 @@ async function handlePayment(req, res) {
         const randomIndex = Math.floor(Math.random() * CHARACTERS.length);
         ticket += CHARACTERS.charAt(randomIndex);
       }
+      /*
       await airtable.create("reservations", {
         Email: email,
         Name: name,
@@ -76,9 +79,11 @@ async function handlePayment(req, res) {
         Where: where,
         When: when,
       });
-      if (x === 0 && quantity === 1) tickets += `${ticket.toUpperCase()}`;
+      */
+      if (x === quantity - 1) tickets += `${ticket.toUpperCase()}`;
       else tickets += `${ticket.toUpperCase()}, `;
     }
+    /*
     await airtable.create("payments", {
       Email: email,
       Name: name,
@@ -96,6 +101,7 @@ async function handlePayment(req, res) {
       Codes: tickets,
       GiftCard: giftcard,
     });
+    */
     /*
     const html = `
     <div style="width: 100%; text-align: center;">
@@ -108,6 +114,7 @@ async function handlePayment(req, res) {
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
     */
+    /* 
     const html = `
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
@@ -130,6 +137,24 @@ async function handlePayment(req, res) {
     <div>Email: ${email}</div>
     </div>`
     );
+    */
+    const contact = await hubspot.createToHubspot("contacts", { email });
+    console.log("CONTACT: ", contact);
+    const ticketList = tickets.split(",");
+    for (let i = 0; i < ticketList.length; i++) {
+      const deal = await hubspot.createToHubspot("deals", {
+        dealname: ticketList[i].trim(),
+        amout: (amount / 100 / quantity).toFixed(2),
+      });
+      console.log("DEAL: ", deal);
+      const association = await hubspot.createAssociatonsToHubspot(
+        "deals",
+        deal.id,
+        "contacts",
+        contact.id
+      );
+      console.log("ASSOCIATION: ", association);
+    }
     console.log("[CONTROLLER][HANDLE-PAYMENT] end");
     return res.status(200).send();
   } catch (err) {
