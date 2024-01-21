@@ -159,7 +159,7 @@ async function handlePayment(req, res) {
     for (let i = 0; i < ticketList.length; i++) {
       const deal = await hubspot.createToHubspot("deals", {
         dealname: ticketList[i].trim(),
-        amout: (amount / 100 / quantity).toFixed(2),
+        amount: (amount / 100 / quantity).toFixed(2),
       });
       console.log("DEAL: ", deal);
       const association = await hubspot.createAssociatonsDealToContactHubspot(
