@@ -1,4 +1,20 @@
 const hubspotConnector = require("./hubspotConnection");
+const hubspot = require("@hubspot/api-client");
+
+let hsInstance = null;
+
+const getHubspotInstance = async () => {
+  if (hsInstance === null) {
+    console.log(
+      "HubspotAPI::getHubspotInstance - Creating new instance",
+      process.env.HUBSPOT_ACCESS_TOKEN
+    );
+    hsInstance = new hubspot.Client({
+      accessToken: process.env.HUBSPOT_ACCESS_TOKEN,
+    });
+  }
+  return hsInstance;
+};
 
 const getFromHubspot = async (
   objectType,
@@ -52,10 +68,10 @@ const getListFromHubspot = async (
 const searchFromHubspot = async (
   objectType,
   filterGroups,
-  properties,
-  after,
-  limit,
-  sorts
+  properties = [],
+  after = 0,
+  limit = 1,
+  sorts = []
 ) => {
   const objectSearchRequest = {
     filterGroups: filterGroups,
@@ -64,12 +80,17 @@ const searchFromHubspot = async (
     limit: limit,
     after: after,
   };
+  const hubspotConnector = await getHubspotInstance();
   const response = await hubspotConnector.apiRequest({
     method: `post`,
     path: `/crm/v3/objects/${objectType}/search`,
     body: objectSearchRequest,
   });
-  return response;
+  const json = await response.json();
+  if (json.results.length == 0) {
+    return null;
+  }
+  return json.results[0];
 };
 
 const updateToHubspot = async (objectType, objectId, properties) => {
@@ -82,12 +103,13 @@ const updateToHubspot = async (objectType, objectId, properties) => {
 };
 
 const createToHubspot = async (objectType, properties) => {
-  const response = await hubspotConnector.apiRequest({
+  const instance = await getHubspotInstance();
+  const response = await instance.apiRequest({
     method: `post`,
     path: `/crm/v3/objects/${objectType}`,
-    body: properties,
+    body: { properties },
   });
-  return response;
+  return await response.json();
 };
 
 const deleteFromHubspot = async (objectType, objectId) => {
@@ -129,6 +151,7 @@ const getAssociationsMapping = async (fromObjectType, toObjectType) => {
       method: `GET`,
       path: `/crm/v4/associations/${fromObjectType}/${toObjectType}/labels`,
     });
+    console.log("RESULT: ", result);
     result.results.map(async (a) => {
       mappingAssociations[fromObjectType][toObjectType].push(a);
     });
@@ -181,30 +204,25 @@ const retriveTypeObject = async (fromObjectType, toObjectType, label) => {
   return typeObject;
 };
 
-const createAssociatonsToHubspot = async (
+const createAssociatonsDealToContactHubspot = async (
   fromObjectType,
   fromObjectId,
   toObjectType,
-  toObjectId,
-  label = null
+  toObjectId
 ) => {
-  const typeObject = await retriveTypeObject(
-    fromObjectType,
-    toObjectType,
-    label
-  );
   const associationBody = [
     {
-      associationCategory: typeObject.category,
-      associationTypeId: typeObject.typeId,
+      associationCategory: "HUBSPOT_DEFINED",
+      associationTypeId: 3,
     },
   ];
-
-  return await hubspotConnector.apiRequest({
+  const instance = await getHubspotInstance();
+  const response = await instance.apiRequest({
     method: `PUT`,
     path: `/crm/v4/objects/${fromObjectType}/${fromObjectId}/associations/${toObjectType}/${toObjectId}`,
     body: associationBody,
   });
+  return await response.json();
 };
 
 const deleteAssociatonsToHubspot = async (
@@ -263,7 +281,7 @@ module.exports = {
   deleteFromHubspot,
   getListFromHubspot,
   getAssociatonsFromHubspot,
-  createAssociatonsToHubspot,
+  createAssociatonsDealToContactHubspot,
   deleteAssociatonsToHubspot,
   getAssociationTypeId,
   mergeObjectOnHubspot,

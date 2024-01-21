@@ -23,7 +23,7 @@ const refreshInstance = () => {
 
 const setHubspotInstanceAccessToken = (accessToken) => {
   hsInstance = new hubspot.Client({
-    accessToken: process.env.HUBSPOT_ACCESS_TOKEN,
+    accessToken,
   });
   return true;
 };
@@ -50,11 +50,13 @@ const apiRequest = async (request) => {
 
     console.log(`HubspotAPI::apiRequest - request: ${JSON.stringify(request)}`);
     const hsConnection = await getHubspotInstance();
-    return await hsConnection.apiRequest(
+    const response = await hsConnection.apiRequest(
       request.method,
       request.path,
       request.body ?? null
     );
+    console.log(response.status, response.statusText);
+    return await response.json();
   } catch (error) {
     console.warn(`HubspotAPI::apiRequest Error ${error.message}`);
     console.log(

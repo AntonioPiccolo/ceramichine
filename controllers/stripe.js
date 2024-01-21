@@ -138,8 +138,23 @@ async function handlePayment(req, res) {
     </div>`
     );
     */
-    const contact = await hubspot.createToHubspot("contacts", { email });
-    console.log("CONTACT: ", contact);
+    let contact = await hubspot.searchFromHubspot("contacts", [
+      {
+        filters: [
+          {
+            propertyName: "email",
+            operator: "EQ",
+            value: email,
+          },
+        ],
+      },
+    ]);
+    console.log("CONTACT Exists: ", contact);
+    if (!contact) {
+      contact = await hubspot.createToHubspot("contacts", {
+        email,
+      });
+    }
     const ticketList = tickets.split(",");
     for (let i = 0; i < ticketList.length; i++) {
       const deal = await hubspot.createToHubspot("deals", {
@@ -147,7 +162,7 @@ async function handlePayment(req, res) {
         amout: (amount / 100 / quantity).toFixed(2),
       });
       console.log("DEAL: ", deal);
-      const association = await hubspot.createAssociatonsToHubspot(
+      const association = await hubspot.createAssociatonsDealToContactHubspot(
         "deals",
         deal.id,
         "contacts",
