@@ -1,6 +1,5 @@
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const sendEmail = require("../utils/sendEmail");
-const airtable = require("../utils/airtable");
 const hubspot = require("../utils/hubspot");
 
 const CHARACTERS =
@@ -58,46 +57,18 @@ async function handlePayment(req, res) {
     );
     console.log("PRODUCT: ", product);
     const { when, where, giftcard, expirationDate } = product.metadata;
-    const date = new Date();
     const expiration = expirationDate
       ? getExpirationDate(expirationDate)
       : undefined;
-    let tickets = "";
+    let tickets = [];
     for (let x = 0; x < quantity; x++) {
       let ticket = "";
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         const randomIndex = Math.floor(Math.random() * CHARACTERS.length);
         ticket += CHARACTERS.charAt(randomIndex);
       }
-      await airtable.create("reservations", {
-        Email: email,
-        Name: name,
-        Code: ticket.toUpperCase(),
-        GiftCard: giftcard,
-        ExpirationDate: expiration,
-        Where: where,
-        When: when,
-      });
-      if (x === quantity - 1) tickets += `${ticket.toUpperCase()}`;
-      else tickets += `${ticket.toUpperCase()}, `;
+      tickets.push(ticket.toUpperCase());
     }
-    await airtable.create("payments", {
-      Email: email,
-      Name: name,
-      Phone: phone,
-      Amount: (amount / 100).toFixed(2),
-      Quantity: quantity.toString(),
-      FiscalCode: fiscalCode,
-      City: city,
-      Country: country,
-      Line: line1,
-      Line_2: line2,
-      PostCode: postal_code,
-      State: state,
-      Event: event,
-      Codes: tickets,
-      GiftCard: giftcard,
-    });
     /*
     const html = `
     <div style="width: 100%; text-align: center;">
@@ -110,7 +81,7 @@ async function handlePayment(req, res) {
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
     */
-
+    /*
     const html = `
     <div style="width: 100%; text-align: center;">
     <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
@@ -133,7 +104,7 @@ async function handlePayment(req, res) {
     <div>Email: ${email}</div>
     </div>`
     );
-
+*/
     let contact = await hubspot.searchFromHubspot("contacts", [
       {
         filters: [
@@ -146,16 +117,33 @@ async function handlePayment(req, res) {
       },
     ]);
     console.log("CONTACT Exists: ", contact);
+    const contactData = {
+      firstname: name,
+      phone,
+      city,
+      country,
+      address: line1,
+      zip: postal_code,
+      state,
+      fiscal_code: fiscalCode,
+    };
     if (!contact) {
       contact = await hubspot.createToHubspot("contacts", {
         email,
+        ...contactData,
       });
+    } else {
+      await hubspot.updateToHubspot("contacts", contact.id, contactData);
     }
-    const ticketList = tickets.split(",");
-    for (let i = 0; i < ticketList.length; i++) {
+    for (let i = 0; i < tickets.length; i++) {
       const deal = await hubspot.createToHubspot("deals", {
-        dealname: ticketList[i].trim(),
+        dealname: event,
+        ticket: tickets[i],
         amount: (amount / 100 / quantity).toFixed(2),
+        //expiration_date: expiration,
+        gift_card: giftcard,
+        where,
+        //when,
       });
       console.log("DEAL: ", deal);
       const association = await hubspot.createAssociatonsDealToContactHubspot(

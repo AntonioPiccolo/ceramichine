@@ -94,12 +94,13 @@ const searchFromHubspot = async (
 };
 
 const updateToHubspot = async (objectType, objectId, properties) => {
-  const response = await hubspotConnector.apiRequest({
+  const instance = await getHubspotInstance();
+  const response = await instance.apiRequest({
     method: `patch`,
     path: `/crm/v3/objects/${objectType}/${objectId}`,
-    body: properties,
+    body: { properties },
   });
-  return response;
+  return await response.json();
 };
 
 const createToHubspot = async (objectType, properties) => {
