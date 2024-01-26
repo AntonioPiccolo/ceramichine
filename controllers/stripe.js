@@ -116,7 +116,6 @@ async function handlePayment(req, res) {
         ],
       },
     ]);
-    console.log("CONTACT Exists: ", contact);
     const contactData = {
       firstname: name,
       phone,
@@ -128,31 +127,33 @@ async function handlePayment(req, res) {
       fiscal_code: fiscalCode,
     };
     if (!contact) {
+      console.log("Create Contact: ", email);
       contact = await hubspot.createToHubspot("contacts", {
         email,
         ...contactData,
       });
     } else {
+      console.log("Update Contact: ", email);
       await hubspot.updateToHubspot("contacts", contact.id, contactData);
     }
     for (let i = 0; i < tickets.length; i++) {
+      console.log("Create Deal: ", tickets[i]);
       const deal = await hubspot.createToHubspot("deals", {
-        dealname: event,
+        dealname: tickets[i],
         ticket: tickets[i],
         amount: (amount / 100 / quantity).toFixed(2),
         //expiration_date: expiration,
         gift_card: giftcard,
+        event_name: event,
         where,
         //when,
       });
-      console.log("DEAL: ", deal);
-      const association = await hubspot.createAssociatonsDealToContactHubspot(
+      await hubspot.createAssociatonsDealToContactHubspot(
         "deals",
         deal.id,
         "contacts",
         contact.id
       );
-      console.log("ASSOCIATION: ", association);
     }
     console.log("[CONTROLLER][HANDLE-PAYMENT] end");
     return res.status(200).send();
