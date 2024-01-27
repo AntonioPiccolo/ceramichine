@@ -69,22 +69,13 @@ async function handlePayment(req, res) {
       }
       tickets.push(ticket.toUpperCase());
     }
-    /*
-    const html = `
+
+    let html;
+
+    if (giftcard) {
+      html = `
     <div style="width: 100%; text-align: center;">
-    <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
-    <br /><h2>Ticket:</h2> <h1>${ticket.toUpperCase()}</h1>
-    <h3>TI ASPETTIAMO!</h3>
-    <h4>${where}</h4>
-    <h4>${when}</h4>
-    <div>Conserve questa mail ed il codice del ticket.</div>
-    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
-    </div>`;
-    */
-    /*
-    const html = `
-    <div style="width: 100%; text-align: center;">
-    <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
+    <img src="${process.env.LOGO}" width="200" />
     <br /><h1>Ciao ${name.split(" ")[0]}</h1>
     <div>Grazie mille per il tuo acquisto!</div>
     <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare.</div>
@@ -92,19 +83,35 @@ async function handlePayment(req, res) {
     <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
-    await sendEmail(email, "CERAMICHINE - Gift Card", html);
+      await sendEmail(email, "CERAMICHINE - Gift Card", html);
+    } else {
+      const htmlTickets = ``;
+      for (let i = 0; i < tickets.length; i++) {
+        htmlTickets += `<h2>${tickets[i].toUpperCase()}</h2>`;
+      }
+      html = `
+    <div style="width: 100%; text-align: center;">
+    <img src="${process.env.LOGO}" width="200" />
+    <br /><h2>Tickets:</h3> ${htmlTickets}
+    <h3>TI ASPETTIAMO!</h3>
+    <h4>${where}</h4>
+    <h4>${when}</h4>
+    <div>Conserve questa mail ed il codice del ticket.</div>
+    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
+    </div>`;
+    }
     await sendEmail(
-      "piccoloelena.work@gmail.com",
+      process.env.EMAIL_TO_NOTIFY,
       "CERAMICHINE - Acquisto",
       `
     <div style="width: 100%; text-align: center;">
-    <img src="https://ceramichine-810ca30742b9.herokuapp.com/asset/logo" width="200" />
+    <img src="${process.env.LOGO}" width="200" />
     <br /><h1>Acquisto - ${event}</h1>
     <div>${name} ha acquistato ${quantity} di ${event}</div>
     <div>Email: ${email}</div>
     </div>`
     );
-*/
+
     let contact = await hubspot.searchFromHubspot("contacts", [
       {
         filters: [
