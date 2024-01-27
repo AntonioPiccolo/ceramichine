@@ -85,7 +85,7 @@ async function handlePayment(req, res) {
     </div>`;
       await sendEmail(email, "CERAMICHINE - Gift Card", html);
     } else {
-      const htmlTickets = ``;
+      let htmlTickets = ``;
       for (let i = 0; i < tickets.length; i++) {
         htmlTickets += `<h2>${tickets[i].toUpperCase()}</h2>`;
       }
