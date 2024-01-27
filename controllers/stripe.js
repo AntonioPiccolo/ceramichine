@@ -99,6 +99,7 @@ async function handlePayment(req, res) {
     <div>Conserve questa mail ed il codice del ticket.</div>
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
+      await sendEmail(email, event, html);
     }
     await sendEmail(
       process.env.EMAIL_TO_NOTIFY,
