@@ -103,7 +103,8 @@ async function handlePayment(req, res) {
     <h4>TI ASPETTIAMO!</h4>
     <div>${where}</div>
     <div>${when}</div>
-    <div>${informations}</div>
+    ${informations ? `<div>${informations}</div>` : ""}
+    <br />
     <div>Conserve questa mail ed il codice del ticket.</div>
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
@@ -158,7 +159,9 @@ async function handlePayment(req, res) {
         dealname: tickets[i],
         ticket: tickets[i],
         amount: (amount / 100 / quantity).toFixed(2),
-        //expiration_date: Date.now(),
+        expiration_date: expiration
+          ? new Date(expiration).getTime()
+          : undefined,
         gift_card: giftcard,
         event_name: event,
         where,
