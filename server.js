@@ -1,5 +1,7 @@
 const express = require("express");
 const stripe = require("./controllers/stripe");
+const ticket = require("./controllers/ticket");
+const html = require("./controllers/html");
 const PORT = process.env.PORT || 3000;
 const { authWebhookStripePaymenet } = require("./middlewares/auth");
 const bodyParser = require("body-parser");
@@ -18,7 +20,9 @@ app.use(express.json());
 app.use(logRequestStart);
 
 app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
+app.post("/api/ticket", ticket.verify);
 
+app.get("/html/form", html.form);
 app.get("/asset/logo", function (req, res) {
   res.sendFile("/assets/logo.png", { root: __dirname });
 });

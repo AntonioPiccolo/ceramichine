@@ -82,7 +82,7 @@ async function handlePayment(req, res) {
     if (giftcard) {
       html = `
     <div style="width: 100%; text-align: center;">
-    <img src="${process.env.LOGO}" width="200" />
+    <img src="${process.env.BASE_URL}/asset/logo" width="200" />
     <br /><h1>Ciao ${name.split(" ")[0]}</h1>
     <div>Grazie mille per il tuo acquisto!</div>
     <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare.</div>
@@ -98,7 +98,7 @@ async function handlePayment(req, res) {
       }
       html = `
     <div style="width: 100%; text-align: center;">
-    <img src="${process.env.LOGO}" width="200" />
+    <img src="${process.env.BASE_URL}/asset/logo" width="200" />
     <br /><h2>Tickets:</h3> ${htmlTickets}
     <h4>TI ASPETTIAMO!</h4>
     <div>${where}</div>
@@ -115,7 +115,7 @@ async function handlePayment(req, res) {
       "CERAMICHINE - Acquisto",
       `
     <div style="width: 100%; text-align: center;">
-    <img src="${process.env.LOGO}" width="200" />
+    <img src="${process.env.BASE_URL}/asset/logo" width="200" />
     <br /><h1>Acquisto - ${event}</h1>
     <div>${name} ha acquistato ${quantity} di ${event}</div>
     <div>Email: ${email}</div>

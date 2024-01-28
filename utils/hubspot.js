@@ -39,11 +39,9 @@ const getFromHubspot = async (
   }
 
   console.log(`HubspotAPI::getFromHubspot request ${JSON.stringify(request)}`);
+  const hubspotConnector = await getHubspotInstance();
   const response = await hubspotConnector.apiRequest(request);
-  console.log(
-    `HubspotAPI::getFromHubspot response ${JSON.stringify(response)}`
-  );
-  return response;
+  return await response.json();
 };
 
 const getListFromHubspot = async (
@@ -230,22 +228,16 @@ const deleteAssociatonsToHubspot = async (
   fromObjectType,
   fromObjectId,
   toObjectType,
-  toObjectId,
-  label
+  toObjectId
 ) => {
-  const typeObject = await retriveTypeObject(
-    fromObjectType,
-    toObjectType,
-    label
-  );
   const associationBody = [
     {
-      associationCategory: typeObject.category,
-      associationTypeId: typeObject.typeId,
+      associationCategory: "HUBSPOT_DEFINED",
+      associationTypeId: 3,
     },
   ];
-
-  return await hubspotConnector.apiRequest({
+  const hubspotConnector = await getHubspotInstance();
+  await hubspotConnector.apiRequest({
     method: `DELETE`,
     path: `/crm/v4/objects/${fromObjectType}/${fromObjectId}/associations/${toObjectType}/${toObjectId}`,
     body: associationBody,
