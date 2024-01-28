@@ -162,7 +162,7 @@ async function handlePayment(req, res) {
         gift_card: giftcard,
         event_name: event,
         where,
-        when: new Date(where).getTime(),
+        when: new Date(when).getTime(),
         informations,
       });
       await hubspot.createAssociatonsDealToContactHubspot(
