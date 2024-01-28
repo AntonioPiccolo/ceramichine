@@ -160,7 +160,7 @@ async function handlePayment(req, res) {
         ticket: tickets[i],
         amount: (amount / 100 / quantity).toFixed(2),
         expiration_date: expiration
-          ? new Date(expiration).getTime()
+          ? new Date(expiration).getTime() - 1000 * 60 * 60
           : undefined,
         gift_card: giftcard,
         event_name: event,
