@@ -13,7 +13,6 @@ function getExpirationDate(date) {
   } else if (date.includes("months")) {
     const now = new Date();
     const expDate = now.setMonth(now.getMonth() + parseInt(date.split(" ")[0]));
-    console.log(expDate);
     return new Date(expDate).toISOString().split("T")[0];
   } else if (date.includes("years")) {
     const now = new Date();
@@ -56,10 +55,18 @@ async function handlePayment(req, res) {
       session.line_items.data[0].price.product
     );
     console.log("PRODUCT: ", product);
-    const { when, where, giftcard, expirationDate } = product.metadata;
+    const { when, where, giftcard, expirationDate, informations } =
+      product.metadata;
     const expiration = expirationDate
       ? getExpirationDate(expirationDate)
       : undefined;
+    console.log("EXPIRATION: ", expiration);
+    const day = new Date(expiration).getDay();
+    const month = new Date(expiration).getMonth();
+    const year = new Date(expiration).getFullYear();
+    console.log("DAY: ", day);
+    console.log("MONTH: ", month);
+    console.log("YEAR: ", year);
     let tickets = [];
     for (let x = 0; x < quantity; x++) {
       let ticket = "";
@@ -93,9 +100,10 @@ async function handlePayment(req, res) {
     <div style="width: 100%; text-align: center;">
     <img src="${process.env.LOGO}" width="200" />
     <br /><h2>Tickets:</h3> ${htmlTickets}
-    <h3>TI ASPETTIAMO!</h3>
-    <h4>${where}</h4>
-    <h4>${when}</h4>
+    <h4>TI ASPETTIAMO!</h4>
+    <div>${where}</div>
+    <div>${when}</div>
+    <div>${informations}</div>
     <div>Conserve questa mail ed il codice del ticket.</div>
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
     </div>`;
@@ -150,11 +158,12 @@ async function handlePayment(req, res) {
         dealname: tickets[i],
         ticket: tickets[i],
         amount: (amount / 100 / quantity).toFixed(2),
-        //expiration_date: expiration,
+        //expiration_date: Date.now(),
         gift_card: giftcard,
         event_name: event,
         where,
-        //when,
+        when: new Date(where).getTime(),
+        informations,
       });
       await hubspot.createAssociatonsDealToContactHubspot(
         "deals",
