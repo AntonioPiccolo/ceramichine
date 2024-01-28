@@ -160,12 +160,12 @@ async function handlePayment(req, res) {
         ticket: tickets[i],
         amount: (amount / 100 / quantity).toFixed(2),
         expiration_date: expiration
-          ? new Date(expiration).getTime() - 1000 * 60 * 60
+          ? new Date(expiration).getTime()
           : undefined,
         gift_card: giftcard,
         event_name: event,
         where,
-        when: new Date(when).getTime(),
+        when: new Date(when).getTime() - 1000 * 60 * 60,
         informations,
       });
       await hubspot.createAssociatonsDealToContactHubspot(
