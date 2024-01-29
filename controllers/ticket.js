@@ -3,7 +3,6 @@ const hubspot = require("../utils/hubspot");
 const verify = async (req, res) => {
   try {
     console.log("[CONTROLLER][TICKET-VERIFY] start");
-    console.log("BODY: ", req.body);
     const { email, firstname, lastname, city, phone, ticket } = req.body;
     if (!email) {
       return res
@@ -40,21 +39,30 @@ const verify = async (req, res) => {
         .status(400)
         .json({ message: "Inserisci il Codice Biglietto", status: 400 });
     }
-    let deal = await hubspot.searchFromHubspot("deals", [
-      {
-        filters: [
-          {
-            propertyName: "ticket",
-            operator: "EQ",
-            value: ticket,
-          },
-        ],
-      },
-    ]);
+    let deal = await hubspot.searchFromHubspot(
+      "deals",
+      [
+        {
+          filters: [
+            {
+              propertyName: "ticket",
+              operator: "EQ",
+              value: ticket,
+            },
+          ],
+        },
+      ],
+      ["ticket_validation"]
+    );
     if (!deal) {
       return res
         .status(403)
         .json({ message: "Biglietto NON Valido!", status: 403 });
+    } else if (deal.properties.ticket_validation) {
+      return res.status(403).json({
+        message: `Biglietto già convalidato!`,
+        status: 403,
+      });
     }
     deal = await hubspot.getFromHubspot("deals", deal.id, [], ["contacts"]);
     console.log("[CONTROLLER][TICKET-VERIFY] deal", deal);
@@ -74,6 +82,9 @@ const verify = async (req, res) => {
       "contacts",
       contact.id
     );
+    await hubspot.updateToHubspot("deals", deal.id, {
+      ticket_validation: new Date().getTime(),
+    });
     console.log("[CONTROLLER][TICKET-VERIFY] end");
     return res.status(200).send({ message: "Ticket validato!", status: 200 });
   } catch (err) {

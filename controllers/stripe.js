@@ -106,7 +106,7 @@ async function handlePayment(req, res) {
     ${informations ? `<div>${informations}</div>` : ""}
     <br />
     <div>Conserve questa mail ed il codice del ticket.</div>
-    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad info@ceramichine.com</i></div>
+    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
       await sendEmail(email, event, html);
     }
