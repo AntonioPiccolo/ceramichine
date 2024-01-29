@@ -21,8 +21,11 @@ app.use(logRequestStart);
 
 app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
 app.post("/api/ticket", ticket.verify);
+app.post("/api/giftcard", ticket.bookEventGiftcard);
 
 app.get("/html/form", html.form);
+app.get("/html/giftcard", html.giftcard);
+
 app.get("/asset/logo", function (req, res) {
   res.sendFile("/assets/logo.png", { root: __dirname });
 });

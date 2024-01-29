@@ -163,7 +163,7 @@ async function handlePayment(req, res) {
           ? new Date(expiration).getTime()
           : undefined,
         gift_card: giftcard,
-        event_name: event,
+        event_name: giftcard ? undefined : event,
         where,
         when: new Date(when).getTime() - 1000 * 60 * 60,
         informations,
