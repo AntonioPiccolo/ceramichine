@@ -176,6 +176,7 @@ const bookEventGiftcard = async (req, res) => {
       event_name: event,
       where,
       when: new Date(when).getTime() - 1000 * 60 * 60,
+      informations,
     });
     let contact = await hubspot.searchFromHubspot("contacts", [
       {
