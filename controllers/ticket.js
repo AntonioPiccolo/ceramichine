@@ -1,5 +1,6 @@
 const hubspot = require("../utils/hubspot");
 const sendEmail = require("../utils/sendEmail");
+const validator = require('validator');
 
 const verify = async (req, res) => {
   try {
@@ -9,6 +10,11 @@ const verify = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Inserisci il campo Email", status: 400 });
+    }
+    if (!validator.isEmail(email)) {
+      return res
+      .status(400)
+      .json({ message: "Email non valida", status: 400 });
     }
     let contact = await hubspot.searchFromHubspot("contacts", [
       {
@@ -110,6 +116,11 @@ const bookEventGiftcard = async (req, res) => {
         message: "Inserisci il campo Email.",
         status: 400,
       });
+    }
+    if (!validator.isEmail(email)) {
+      return res
+      .status(400)
+      .json({ message: "Email non valida", status: 400 });
     }
     if (!event || !where || !when) {
       return res.status(400).json({

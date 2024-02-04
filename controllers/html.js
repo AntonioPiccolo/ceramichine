@@ -100,12 +100,13 @@ const form = (req, res) => {
             <label for="ticket">Codice Biglietto:</label>
             <input name="ticket" required></input>
 
-            <button type="button" onclick="submitForm()">Convalida</button>
+            <button id="validateBtn" type="button" onclick="submitForm()">Convalida</button>
         </form>
     </div>
 </div>
     <script>
         function submitForm() {
+            document.getElementById('validateBtn').disabled = true;
             var form = document.getElementById('ticketForm');
             var formData = new FormData(form);
 
@@ -125,6 +126,7 @@ const form = (req, res) => {
             })
             .then(response => response.json())
             .then(data => {
+                document.getElementById('validateBtn').disabled = false;
                 console.log('Success:', data);
                 if (data.status === 200) {
                     document.getElementById('ticketForm').style.display = 'none';
@@ -137,6 +139,7 @@ const form = (req, res) => {
                 }
             })
             .catch((error) => {
+                document.getElementById('validateBtn').disabled = false;
                 console.error('Error:', error);
             });
         }
@@ -241,15 +244,15 @@ const giftcard = (req, res) => {
 
             <label for="ticket">Codice Biglietto:</label>
             <input name="ticket" required></input>
-            <button type="button" onclick="submitForm()">Convalida</button>
+            <button id="validateBtn" type="button" onclick="submitForm()">Convalida</button>
         </form>
     </div>
 </div>
     <script>
         function submitForm() {
+            document.getElementById('validateBtn').disabled = true;
             var form = document.getElementById('ticketForm');
             var formData = new FormData(form);
-
             fetch('${process.env.BASE_URL}/api/giftcard', {
                 method: 'POST',
                         headers: {
@@ -266,6 +269,7 @@ const giftcard = (req, res) => {
             })
             .then(response => response.json())
             .then(data => {
+                document.getElementById('validateBtn').disabled = false;
                 console.log('Success:', data);
                 if (data.status === 200) {
                     document.getElementById('ticketForm').style.display = 'none';
@@ -279,6 +283,7 @@ const giftcard = (req, res) => {
                 }
             })
             .catch((error) => {
+                document.getElementById('validateBtn').disabled = false;
                 console.error('Error:', error);
             });
         }
