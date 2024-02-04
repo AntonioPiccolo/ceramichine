@@ -16,6 +16,11 @@ const verify = async (req, res) => {
       .status(400)
       .json({ message: "Email non valida", status: 400 });
     }
+    if (!firstname || !lastname || !city || !phone) {
+      return res
+        .status(400)
+        .json({ message: "Completa tutti i campi", status: 400 });
+    }
     let contact = await hubspot.searchFromHubspot("contacts", [
       {
         filters: [
