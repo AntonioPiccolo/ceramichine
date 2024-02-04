@@ -6,91 +6,103 @@ const form = (req, res) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket Form</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            height: 100vh;
-        }
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 5px;
+    }
 
-        h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    h2 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
+    form {
+        max-width: 400px;
+        width: 100%;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-size: 14px;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    /* Aggiunto per rendere il layout responsive */
+    @media (max-width: 600px) {
         form {
-            max-width: 400px;
-            width: 100%;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-size: 14px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            background-color: #4caf50;
-            color: #fff;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
+    }
     </style>
 </head>
 <body>
     <div id="formID" style="display: block">
     <div style="text-align: center"><img src="${process.env.BASE_URL}/asset/logo" width="200" /></div>
-    <h2 id="title">Convalida il tuo biglietto</h2>
-    <h2 id="successTitle" style="display: none">Biglietto validato!</h2>
+    <h2 id="title">Convalida Biglietto</h2>
+    <h2 id="successTitle" style="display: none">Biglietto validato, buon divertimento!</h2>
     <h1 id="smileTitle" style="display: none; text-align: center">:)</h1>
-    <form id="ticketForm">
-        <label for="email">Email:</label>
-        <input type="email" name="email" required>
+    <div style="display: flex; justify-content: center;">
+        <form id="ticketForm">
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
 
-        <label for="firstname">Nome:</label>
-        <input type="text" name="firstname" required>
+            <label for="firstname">Nome:</label>
+            <input type="text" name="firstname" required>
 
-        <label for="lastname">Cognome:</label>
-        <input type="text" name="lastname" required>
+            <label for="lastname">Cognome:</label>
+            <input type="text" name="lastname" required>
 
-        <label for="city">Città:</label>
-        <input type="text" name="city" required>
+            <label for="city">Città:</label>
+            <input type="text" name="city" required>
 
-        <label for="phone">Cellulare:</label>
-        <input type="phone" name="phone" required>
+            <label for="phone">Cellulare:</label>
+            <input type="phone" name="phone" required>
 
-        <label for="ticket">Codice Biglietto:</label>
-        <input name="ticket" required></input>
+            <label for="ticket">Codice Biglietto:</label>
+            <input name="ticket" required></input>
 
-        <button type="button" onclick="submitForm()">Convalida</button>
-    </form>
+            <button type="button" onclick="submitForm()">Convalida</button>
+        </form>
+    </div>
 </div>
     <script>
         function submitForm() {
@@ -146,62 +158,72 @@ const giftcard = (req, res) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket Form</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            height: 100vh;
-        }
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 5px;
+    }
 
-        h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    h2 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
+    form {
+        max-width: 400px;
+        width: 100%;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-size: 14px;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    /* Aggiunto per rendere il layout responsive */
+    @media (max-width: 600px) {
         form {
-            max-width: 400px;
-            width: 100%;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-size: 14px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            background-color: #4caf50;
-            color: #fff;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
+    }
     </style>
 </head>
 <body>
@@ -210,15 +232,18 @@ const giftcard = (req, res) => {
     <h2 id="title">Prenota Evento</h2>
     <h2 id="successTitle" style="display: none">Ti sei prenotato, a presto!</h2>
     <h1 id="smileTitle" style="display: none; text-align: center">:)</h1>
-    <div id="info">Inserisci il codice biglietto ricevuto dopo l'acquesto della Gift Card per prenotarti all'evento.</div>
-    <form id="ticketForm">
-        <label for="email">Email:</label>
-        <input name="email" required></input>
+    <div id="info">Inserisci il codice biglietto ricevuto dopo l'acquisto della Gift Card per prenotarti all'evento.</div>
+    <h4>${event}</h4>
+    <div style="display: flex; justify-content: center;">
+        <form id="ticketForm">
+            <label for="email">Email:</label>
+            <input name="email" required></input>
 
-        <label for="ticket">Codice Biglietto:</label>
-        <input name="ticket" required></input>
-        <button type="button" onclick="submitForm()">Convalida</button>
-    </form>
+            <label for="ticket">Codice Biglietto:</label>
+            <input name="ticket" required></input>
+            <button type="button" onclick="submitForm()">Convalida</button>
+        </form>
+    </div>
 </div>
     <script>
         function submitForm() {

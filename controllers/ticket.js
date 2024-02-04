@@ -130,7 +130,7 @@ const bookEventGiftcard = async (req, res) => {
           ],
         },
       ],
-      ["ticket_validation", "gift_card", "event_name"]
+      ["ticket_validation", "gift_card", "event_name", "expiration_date"]
     );
     if (!deal) {
       return res
@@ -146,7 +146,13 @@ const bookEventGiftcard = async (req, res) => {
     }
     if (!deal.properties.gift_card) {
       return res.status(403).json({
-        message: `Questo biglietto non è stato acquistato con una Gift Card.`,
+        message: `Questo biglietto non è stato acquistato tramite Gift Card.`,
+        status: 403,
+      });
+    }
+    if (new Date(deal.properties.expiration_date) <= new Date()) {
+      return res.status(403).json({
+        message: `Questo biglietto è scaduto.`,
         status: 403,
       });
     }
