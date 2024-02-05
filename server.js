@@ -13,13 +13,16 @@ const logRequestStart = (req, res, next) => {
 };
 
 const app = express();
-if (process.env.NODE_ENV === "production") {
-  app.use(bodyParser.raw({ type: "application/json" }));
-}
+
 app.use(express.json());
 app.use(logRequestStart);
 
-app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
+app.post("/api/payment", function (req, res, next) {
+  if (process.env.NODE_ENV === "production") {
+    bodyParser.raw({ type: "application/json" })
+  }
+  next()
+}, authWebhookStripePaymenet, stripe.handlePayment);
 app.post("/api/ticket", ticket.verify);
 app.post("/api/giftcard", ticket.bookEventGiftcard);
 
