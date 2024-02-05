@@ -85,7 +85,7 @@ const searchFromHubspot = async (
     body: objectSearchRequest,
   });
   const json = await response.json();
-  if (json.results.length == 0) {
+  if (!json?.results || json.results.length == 0) {
     return null;
   }
   return json.results[0];
