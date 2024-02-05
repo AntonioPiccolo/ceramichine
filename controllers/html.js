@@ -4,7 +4,7 @@ const form = (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Form</title>
+    <title>Convalida Biglietto</title>
     <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -159,7 +159,7 @@ const giftcard = (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Form</title>
+    <title>Prenotazione Gift Card</title>
     <style>
     body {
         font-family: 'Arial', sans-serif;

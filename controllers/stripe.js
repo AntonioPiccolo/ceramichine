@@ -78,34 +78,35 @@ async function handlePayment(req, res) {
     }
 
     let html;
-
+    let htmlTickets = ``;
+    for (let i = 0; i < tickets.length; i++) {
+      htmlTickets += `<h2>${tickets[i].toUpperCase()}</h2>`;
+    }
     if (giftcard) {
       html = `
-    <div style="width: 100%; text-align: center;">
-    <img src="${process.env.BASE_URL}/asset/logo" width="200" />
-    <br /><h1>Ciao ${name.split(" ")[0]}</h1>
-    <div>Grazie mille per il tuo acquisto!</div>
-    <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare.</div>
-    <div>Ci vediamo a Ceramichine, a presto :)</div>
-    <br />
-    <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
-    </div>`;
+        <div style="width: 100%; text-align: center;">
+        <img src="${process.env.BASE_URL}/asset/logo" width="200" />
+        <br /><h1>Ciao ${name.split(" ")[0]}</h1>
+        <div>Grazie mille per il tuo acquisto!</div>
+        <br /><h3>Bliglietti:</h3> ${htmlTickets}
+        <div>Entro 48h riceverai una mail con il buono stampabile da poter regalare.</div>
+        <div>Ci vediamo a Ceramichine, a presto :)</div>
+        <br />
+        <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
+        </div>`;
       await sendEmail(email, "CERAMICHINE - Gift Card", html);
     } else {
-      let htmlTickets = ``;
-      for (let i = 0; i < tickets.length; i++) {
-        htmlTickets += `<h2>${tickets[i].toUpperCase()}</h2>`;
-      }
       html = `
     <div style="width: 100%; text-align: center;">
     <img src="${process.env.BASE_URL}/asset/logo" width="200" />
-    <br /><h2>Tickets:</h3> ${htmlTickets}
+    <br /><h3>Bliglietti:</h3> ${htmlTickets}
     <h4>TI ASPETTIAMO!</h4>
     <div>${where}</div>
     <div>${when}</div>
     ${informations ? `<div>${informations}</div>` : ""}
     <br />
-    <div>Conserve questa mail ed il codice del ticket.</div>
+    <div>Conserva questa mail ed i codici dei biglietti, ti serviranno per accedere all'evento.</div>
+    <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
       await sendEmail(email, event, html);

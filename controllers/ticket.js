@@ -215,7 +215,7 @@ const bookEventGiftcard = async (req, res) => {
     const html = `
     <div style="width: 100%; text-align: center;">
     <img src="${process.env.BASE_URL}/asset/logo" width="200" />
-    <br /><h2>Tickets:</h3> ${ticket}
+    <br /><h2>Biglietto:</h3> ${ticket}
     <h4>TI ASPETTIAMO!</h4>
     <div>${where}</div>
     <div>${when}</div>
@@ -225,7 +225,7 @@ const bookEventGiftcard = async (req, res) => {
         : ""
     }
     <br />
-    <div>Conserve questa mail ed il codice del ticket.</div>
+    <div>Conserva questa mail ed il codice del biglietto, ti servirà per accedere all'evento.</div>
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
     await sendEmail(email, event, html);
