@@ -121,6 +121,7 @@ async function handlePayment(req, res) {
     <br /><h1>Acquisto - ${event}</h1>
     <div>${name} ha acquistato ${quantity} di ${event}</div>
     <div>Email: ${email}</div>
+    <br /><h3>Bliglietti:</h3> ${htmlTickets}
     </div>`
     );
 
