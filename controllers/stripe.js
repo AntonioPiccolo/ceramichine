@@ -1,6 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const sendEmail = require("../utils/sendEmail");
 const hubspot = require("../utils/hubspot");
+const { invertDate } = require("../utils/utils");
 
 const CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -102,7 +103,7 @@ async function handlePayment(req, res) {
     <br /><h3>Bliglietti:</h3> ${htmlTickets}
     <h4>TI ASPETTIAMO!</h4>
     <div>${where}</div>
-    <div>${when}</div>
+    <div>${invertDate(when)}</div>
     ${informations ? `<div>${informations}</div>` : ""}
     <br />
     <div>Conserva questa mail ed i codici dei biglietti, ti serviranno per accedere all'evento.</div>

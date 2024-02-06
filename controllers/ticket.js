@@ -1,6 +1,7 @@
 const hubspot = require("../utils/hubspot");
 const sendEmail = require("../utils/sendEmail");
-const validator = require('validator');
+const validator = require("validator");
+const { invertDate } = require("../utils/utils");
 
 const verify = async (req, res) => {
   try {
@@ -12,9 +13,7 @@ const verify = async (req, res) => {
         .json({ message: "Inserisci il campo Email", status: 400 });
     }
     if (!validator.isEmail(email)) {
-      return res
-      .status(400)
-      .json({ message: "Email non valida", status: 400 });
+      return res.status(400).json({ message: "Email non valida", status: 400 });
     }
     if (!firstname || !lastname || !city || !phone) {
       return res
@@ -123,9 +122,7 @@ const bookEventGiftcard = async (req, res) => {
       });
     }
     if (!validator.isEmail(email)) {
-      return res
-      .status(400)
-      .json({ message: "Email non valida", status: 400 });
+      return res.status(400).json({ message: "Email non valida", status: 400 });
     }
     if (!event || !where || !when) {
       return res.status(400).json({
@@ -218,7 +215,7 @@ const bookEventGiftcard = async (req, res) => {
     <br /><h2>Biglietto:</h3> ${ticket}
     <h4>TI ASPETTIAMO!</h4>
     <div>${where}</div>
-    <div>${when}</div>
+    <div>${invertDate(when)}</div>
     ${
       informations && informations !== "undefined"
         ? `<div>${informations}</div>`
