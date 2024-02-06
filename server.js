@@ -8,21 +8,26 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 
 const logRequestStart = (req, res, next) => {
+  console.info(`${req.headers}`);
   console.info(`${req.method} ${req.originalUrl} ${JSON.stringify(req.body)}`);
   next();
 };
 
-const app = express();
+function customBodyParser(req, res, next) {
+  console.log(req.url, process.env.NODE_ENV);
+  if (req.url === "/api/payment" && process.env.NODE_ENV === "production") {
+    bodyParser.raw({ type: "application/json" })(req, res, next);
+  } else {
+    next();
+  }
+}
 
+const app = express();
+app.use(customBodyParser);
 app.use(express.json());
 app.use(logRequestStart);
 
-app.post("/api/payment", function (req, res, next) {
-  if (process.env.NODE_ENV === "production") {
-    bodyParser.raw({ type: "application/json" })
-  }
-  next()
-}, authWebhookStripePaymenet, stripe.handlePayment);
+app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
 app.post("/api/ticket", ticket.verify);
 app.post("/api/giftcard", ticket.bookEventGiftcard);
 
