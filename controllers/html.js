@@ -97,6 +97,9 @@ const form = (req, res) => {
             <label for="phone">Cellulare:</label>
             <input type="phone" name="phone" required>
 
+            <label for="instagram">Instagram:</label>
+            <input type="instagram" name="instagram" required>
+
             <label for="ticket">Codice Biglietto:</label>
             <input name="ticket" required></input>
 
@@ -121,6 +124,7 @@ const form = (req, res) => {
                     lastname: formData.get('lastname'),
                     city: formData.get('city'),
                     phone: formData.get('phone'),
+                    instagram: formData.get('instagram'),
                     ticket: formData.get('ticket')
                 })
             })
