@@ -6,7 +6,8 @@ const { invertDate } = require("../utils/utils");
 const verify = async (req, res) => {
   try {
     console.log("[CONTROLLER][TICKET-VERIFY] start");
-    const { email, firstname, lastname, city, phone, ticket } = req.body;
+    const { email, firstname, lastname, city, phone, ticket, instagram } =
+      req.body;
     if (!email) {
       return res
         .status(400)
@@ -35,6 +36,7 @@ const verify = async (req, res) => {
       firstname: firstname + " " + lastname,
       phone,
       city,
+      instagram,
     };
     if (!contact) {
       contact = await hubspot.createToHubspot("contacts", {
