@@ -189,7 +189,8 @@ async function handlePayment(req, res) {
 const generateEvent = async (req, res) => {
   try {
     console.log("[CONTROLLER][GENERATE-EVENT] start");
-    const { event, where, when, informations, password } = req.body;
+    const { event, description, where, when, amount, informations, password } =
+      req.body;
     if (!event || !where || !when || !password) {
       return res.status(400).json({
         message: "Completa tutti i campi",
@@ -208,15 +209,24 @@ const generateEvent = async (req, res) => {
         status: 401,
       });
     }
+    /*
+    if (amount) {
+      const price = await stripe.prices.create({
+        product: process.env.STRIPE_PRODUCT_ID, // ID del prodotto esistente
+        unit_amount: parseInt(amount) * 100, // Prezzo in centesimi
+        currency: "eur", // o la valuta che intendi usare
+      });
+      console.log("Product Price: ", price);
+    }
+    */
     const productUpdated = await stripe.products.update(
       process.env.STRIPE_PRODUCT_ID,
       {
-        name: "Nuovo Nome Prodotto",
-        description: "Nuova descrizione del prodotto.",
-        metadata: { where: "VIA MAMMA MIA, 7", when: "02/15/2024" },
+        name: event,
+        description,
+        metadata: { where, when },
       }
     );
-
     console.log("Product Updated: ", productUpdated);
     console.log("[CONTROLLER][GENERATE-EVENT] end");
     const giftcardLink = `${

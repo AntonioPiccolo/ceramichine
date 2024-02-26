@@ -385,6 +385,9 @@ const generateEvent = (req, res) => {
             <label for="event">Nome Evento:</label>
             <input name="event" required></input>
 
+            <label for="description">Descrizione:</label>
+            <input name="description" required></input>
+
             <label for="when">Quando:</label>
             <input name="when" required></input>
 
@@ -410,6 +413,7 @@ const generateEvent = (req, res) => {
         },
                 body: JSON.stringify({
                     event: formData.get('event'),
+                    description: formData.get('description'),
                     where: formData.get('where'),
                     when: formData.get('when'),
                     password: formData.get('password')
