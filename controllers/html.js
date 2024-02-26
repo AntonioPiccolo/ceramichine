@@ -392,7 +392,7 @@ const generateEvent = (req, res) => {
             <input name="where" required></input>
 
             <label for="password">Password:</label>
-            <input name="password" required></input>
+            <input type="password" name="password" required></input>
             <button id="validateBtn" type="button" onclick="submitForm()">Conferma</button>
         </form>
     </div>
