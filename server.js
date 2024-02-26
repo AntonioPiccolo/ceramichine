@@ -1,11 +1,11 @@
 const express = require("express");
+require("dotenv").config();
 const stripe = require("./controllers/stripe");
 const ticket = require("./controllers/ticket");
 const html = require("./controllers/html");
 const PORT = process.env.PORT || 3000;
 const { authWebhookStripePaymenet } = require("./middlewares/auth");
 const bodyParser = require("body-parser");
-require("dotenv").config();
 
 const logRequestStart = (req, res, next) => {
   console.info(`${req.headers}`);
@@ -30,9 +30,11 @@ app.use(logRequestStart);
 app.post("/api/payment", authWebhookStripePaymenet, stripe.handlePayment);
 app.post("/api/ticket", ticket.verify);
 app.post("/api/giftcard", ticket.bookEventGiftcard);
+app.post("/api/generateEvent", stripe.generateEvent);
 
 app.get("/html/form", html.form);
 app.get("/html/giftcard", html.giftcard);
+app.get("/html/generateEvent", html.generateEvent);
 
 app.get("/asset/logo", function (req, res) {
   res.sendFile("/assets/logo.png", { root: __dirname });

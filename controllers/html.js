@@ -300,7 +300,148 @@ const giftcard = (req, res) => {
   return res.status(200).send(html);
 };
 
+const generateEvent = (req, res) => {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generazione Evento</title>
+    <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 5px;
+    }
+
+    h2 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    form {
+        max-width: 400px;
+        width: 100%;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-size: 14px;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    /* Aggiunto per rendere il layout responsive */
+    @media (max-width: 600px) {
+        form {
+            padding: 20px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div id="formID" style="display: block">
+    <div style="text-align: center"><img src="${process.env.BASE_URL}/asset/logo" width="200" /></div>
+    <h2 id="title">Generazione Evento</h2>
+    <div id="formFields" style="display: flex; justify-content: center;">
+        <form id="ticketForm">
+            <label for="event">Nome Evento:</label>
+            <input name="event" required></input>
+
+            <label for="when">Quando:</label>
+            <input name="when" required></input>
+
+            <label for="where">Dove:</label>
+            <input name="where" required></input>
+
+            <label for="password">Password:</label>
+            <input name="password" required></input>
+            <button id="validateBtn" type="button" onclick="submitForm()">Conferma</button>
+        </form>
+    </div>
+    <div id="success" style="word-break: break-word;"></div>
+</div>
+    <script>
+        function submitForm() {
+            document.getElementById('validateBtn').disabled = true;
+            var form = document.getElementById('ticketForm');
+            var formData = new FormData(form);
+            fetch('${process.env.BASE_URL}/api/generateEvent', {
+                method: 'POST',
+                        headers: {
+            'Content-Type': 'application/json'
+        },
+                body: JSON.stringify({
+                    event: formData.get('event'),
+                    where: formData.get('where'),
+                    when: formData.get('when'),
+                    password: formData.get('password')
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('validateBtn').disabled = false;
+                console.log('Success:', data);
+                if (data.status === 200) {
+                    document.getElementById('formFields').style.display = 'none';
+                    document.getElementById('success').innerText = data.message;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch((error) => {
+                document.getElementById('validateBtn').disabled = false;
+                console.error('Error:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>
+`;
+  res.set("Content-Type", "text/html");
+  return res.status(200).send(html);
+};
+
 module.exports = {
   form,
   giftcard,
+  generateEvent,
 };

@@ -1,7 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const sendEmail = require("../utils/sendEmail");
 const hubspot = require("../utils/hubspot");
-const { invertDate } = require("../utils/utils");
+const { invertDate, isValidDateTimeFormat } = require("../utils/utils");
 
 const CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -186,6 +186,57 @@ async function handlePayment(req, res) {
   }
 }
 
+const generateEvent = async (req, res) => {
+  try {
+    console.log("[CONTROLLER][GENERATE-EVENT] start");
+    const { event, where, when, informations, password } = req.body;
+    if (!event || !where || !when || !password) {
+      return res.status(400).json({
+        message: "Completa tutti i campi",
+        status: 400,
+      });
+    }
+    if (!isValidDateTimeFormat(when)) {
+      return res.status(400).json({
+        message: "Formato data non valido, formato atteso: MM/DD/YYYY HH:mm",
+        status: 400,
+      });
+    }
+    if (password !== process.env.PASSWORD) {
+      return res.status(401).json({
+        message: "Password non valida",
+        status: 401,
+      });
+    }
+    const productUpdated = await stripe.products.update(
+      process.env.STRIPE_PRODUCT_ID,
+      {
+        name: "Nuovo Nome Prodotto",
+        description: "Nuova descrizione del prodotto.",
+        metadata: { where: "VIA MAMMA MIA, 7", when: "02/15/2024" },
+      }
+    );
+
+    console.log("Product Updated: ", productUpdated);
+    console.log("[CONTROLLER][GENERATE-EVENT] end");
+    const giftcardLink = `${
+      process.env.BASE_URL
+    }/html/giftcard?event=${encodeURIComponent(
+      event
+    )}&where=${encodeURIComponent(where)}&when=${encodeURIComponent(when)}`;
+    return res.status(200).send({
+      message: `Stripe: ${process.env.STRIPE_PAYMENT_LINK}\n\n Giftcard: ${giftcardLink}`,
+      status: 200,
+    });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .send({ message: "Ops c'è stato un problema!", status: 500 });
+  }
+};
+
 module.exports = {
   handlePayment,
+  generateEvent,
 };
