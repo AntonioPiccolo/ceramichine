@@ -132,8 +132,8 @@ async function handlePayment(req, res) {
         `
     <div style="width: 100%; text-align: center;">
     <img src="${process.env.BASE_URL}/asset/logo" width="200" />
-    <br /><h1>ERRORE Acquisto - ${event}</h1>
-    <div>Non è stato possibile notificare l'acquisto all'email: ${email}</div>
+    <br /><h1>ERRORE Acquisto</h1>
+    <div>Non è stato possibile notificare l'acquisto di ${event} all'email: ${email}</div>
     <br /><h3>Bliglietti:</h3> ${htmlTickets}
     </div>`
       );
@@ -199,12 +199,7 @@ async function handlePayment(req, res) {
         where,
         when: new Date(when).getTime() - 1000 * 60 * 60,
         informations,
-        err_email:
-          isValidEmail && !notified
-            ? "NON NOTIFICATO"
-            : !isValidEmail || !notified
-            ? email
-            : "",
+        err_email: !isValidEmail || !notified ? email : "",
       });
       if (isValidEmail) {
         await hubspot.createAssociatonsDealToContactHubspot(
