@@ -33,7 +33,8 @@ const verify = async (req, res) => {
       },
     ]);
     const contactData = {
-      firstname: firstname + " " + lastname,
+      firstname: firstname,
+      lastname: lastname,
       phone,
       city,
       instagram,

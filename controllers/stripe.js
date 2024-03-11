@@ -165,7 +165,8 @@ async function handlePayment(req, res) {
         },
       ]);
       const contactData = {
-        firstname: name,
+        firstname: name.split(" ")[0],
+        lastname: name.replace(name.split(" ")[0], "").trim(),
         phone,
         city,
         country,
