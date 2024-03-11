@@ -2,6 +2,7 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const sendEmail = require("../utils/sendEmail");
 const hubspot = require("../utils/hubspot");
 const { invertDate, isValidDateTimeFormat } = require("../utils/utils");
+const validator = require("validator");
 
 const CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -35,6 +36,7 @@ async function handlePayment(req, res) {
     const { email, name, phone } = req?.body?.data?.object?.customer_details;
     const { city, country, line1, line2, postal_code, state } =
       req?.body?.data?.object?.customer_details?.address;
+    const isValidEmail = validator.isEmail(email);
     const amount = req?.body?.data?.object?.amount_total;
     const session = await stripe.checkout.sessions.retrieve(
       req?.body?.data?.object?.id,
@@ -83,8 +85,11 @@ async function handlePayment(req, res) {
     for (let i = 0; i < tickets.length; i++) {
       htmlTickets += `<h2>${tickets[i].toUpperCase()}</h2>`;
     }
-    if (giftcard) {
-      html = `
+    let notified = true;
+    if (isValidEmail) {
+      try {
+        if (giftcard) {
+          html = `
         <div style="width: 100%; text-align: center;">
         <img src="${process.env.BASE_URL}/asset/logo" width="200" />
         <br /><h1>Ciao ${name.split(" ")[0]}</h1>
@@ -95,9 +100,9 @@ async function handlePayment(req, res) {
         <br />
         <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
         </div>`;
-      await sendEmail(email, "CERAMICHINE - Gift Card", html);
-    } else {
-      html = `
+          await sendEmail(email, "CERAMICHINE - Gift Card", html);
+        } else {
+          html = `
     <div style="width: 100%; text-align: center;">
     <img src="${process.env.BASE_URL}/asset/logo" width="200" />
     <br /><h3>Bliglietti:</h3> ${htmlTickets}
@@ -110,12 +115,33 @@ async function handlePayment(req, res) {
     <br />
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
     </div>`;
-      await sendEmail(email, event, html);
+          await sendEmail(email, event, html);
+        }
+      } catch (err) {
+        notified = false;
+        console.error(
+          "[CONTROLLER][HANDLE-PAYMENT] Error: unable to notify via Email ",
+          err
+        );
+      }
     }
-    await sendEmail(
-      process.env.EMAIL_TO_NOTIFY,
-      "CERAMICHINE - Acquisto",
-      `
+    if (!notified || !isValidEmail) {
+      await sendEmail(
+        process.env.EMAIL_TO_NOTIFY,
+        "CERAMICHINE - ERRORE Acquisto",
+        `
+    <div style="width: 100%; text-align: center;">
+    <img src="${process.env.BASE_URL}/asset/logo" width="200" />
+    <br /><h1>ERRORE Acquisto - ${event}</h1>
+    <div>Non è stato possibile notificare l'acquisto all'email: ${email}</div>
+    <br /><h3>Bliglietti:</h3> ${htmlTickets}
+    </div>`
+      );
+    } else {
+      await sendEmail(
+        process.env.EMAIL_TO_NOTIFY,
+        "CERAMICHINE - Acquisto",
+        `
     <div style="width: 100%; text-align: center;">
     <img src="${process.env.BASE_URL}/asset/logo" width="200" />
     <br /><h1>Acquisto - ${event}</h1>
@@ -123,38 +149,41 @@ async function handlePayment(req, res) {
     <div>Email: ${email}</div>
     <br /><h3>Bliglietti:</h3> ${htmlTickets}
     </div>`
-    );
-
-    let contact = await hubspot.searchFromHubspot("contacts", [
-      {
-        filters: [
-          {
-            propertyName: "email",
-            operator: "EQ",
-            value: email,
-          },
-        ],
-      },
-    ]);
-    const contactData = {
-      firstname: name,
-      phone,
-      city,
-      country,
-      address: line1,
-      zip: postal_code,
-      state,
-      fiscal_code: fiscalCode,
-    };
-    if (!contact) {
-      console.log("Create Contact: ", email);
-      contact = await hubspot.createToHubspot("contacts", {
-        email,
-        ...contactData,
-      });
-    } else {
-      console.log("Update Contact: ", email);
-      await hubspot.updateToHubspot("contacts", contact.id, contactData);
+      );
+    }
+    let contact;
+    if (isValidEmail) {
+      contact = await hubspot.searchFromHubspot("contacts", [
+        {
+          filters: [
+            {
+              propertyName: "email",
+              operator: "EQ",
+              value: email,
+            },
+          ],
+        },
+      ]);
+      const contactData = {
+        firstname: name,
+        phone,
+        city,
+        country,
+        address: line1,
+        zip: postal_code,
+        state,
+        fiscal_code: fiscalCode,
+      };
+      if (!contact) {
+        console.log("Create Contact: ", email);
+        contact = await hubspot.createToHubspot("contacts", {
+          email,
+          ...contactData,
+        });
+      } else {
+        console.log("Update Contact: ", email);
+        await hubspot.updateToHubspot("contacts", contact.id, contactData);
+      }
     }
     for (let i = 0; i < tickets.length; i++) {
       console.log("Create Deal: ", tickets[i]);
@@ -170,13 +199,21 @@ async function handlePayment(req, res) {
         where,
         when: new Date(when).getTime() - 1000 * 60 * 60,
         informations,
+        err_email:
+          isValidEmail && !notified
+            ? "NON NOTIFICATO"
+            : !isValidEmail || !notified
+            ? email
+            : "",
       });
-      await hubspot.createAssociatonsDealToContactHubspot(
-        "deals",
-        deal.id,
-        "contacts",
-        contact.id
-      );
+      if (isValidEmail) {
+        await hubspot.createAssociatonsDealToContactHubspot(
+          "deals",
+          deal.id,
+          "contacts",
+          contact.id
+        );
+      }
     }
     console.log("[CONTROLLER][HANDLE-PAYMENT] end");
     return res.status(200).send();
