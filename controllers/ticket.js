@@ -37,7 +37,6 @@ const verify = async (req, res) => {
       lastname: lastname,
       phone,
       city,
-      instagram,
     };
     if (!contact) {
       contact = await hubspot.createToHubspot("contacts", {
@@ -97,6 +96,7 @@ const verify = async (req, res) => {
     );
     await hubspot.updateToHubspot("deals", deal.id, {
       ticket_validation: new Date().getTime(),
+      instagram
     });
     console.log("[CONTROLLER][TICKET-VERIFY] end");
     return res.status(200).send({ message: "Ticket validato!", status: 200 });
@@ -218,11 +218,10 @@ const bookEventGiftcard = async (req, res) => {
     <h4>TI ASPETTIAMO!</h4>
     <div>${where}</div>
     <div>${invertDate(when)}</div>
-    ${
-      informations && informations !== "undefined"
+    ${informations && informations !== "undefined"
         ? `<div>${informations}</div>`
         : ""
-    }
+      }
     <br />
     <div>Conserva questa mail ed il codice del biglietto, ti servirà per accedere all'evento.</div>
     <div><i>Non rispondere a questa mail, se hai bisogno di aiuto invia un email ad hello@ceramichine.com</i></div>
