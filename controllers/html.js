@@ -368,6 +368,13 @@ const generateEvent = (req, res) => {
         background-color: #45a049;
     }
 
+    .copied-message {
+      color: green;
+      font-weight: bold;
+      display: none;
+      margin-top: 10px;
+    }
+
     /* Aggiunto per rendere il layout responsive */
     @media (max-width: 600px) {
         form {
@@ -379,14 +386,11 @@ const generateEvent = (req, res) => {
 <body>
     <div id="formID" style="display: block">
     <div style="text-align: center"><img src="${process.env.BASE_URL}/asset/logo" width="200" /></div>
-    <h2 id="title">Generazione Evento</h2>
+    <h2 id="title">Generazione Link Giftcard</h2>
     <div id="formFields" style="display: flex; justify-content: center;">
         <form id="ticketForm">
             <label for="event">Nome Evento:</label>
             <input name="event" required></input>
-
-            <label for="description">Descrizione:</label>
-            <input name="description" required></input>
 
             <label for="when">Quando:</label>
             <input name="when" required></input>
@@ -394,14 +398,44 @@ const generateEvent = (req, res) => {
             <label for="where">Dove:</label>
             <input name="where" required></input>
 
-            <label for="password">Password:</label>
-            <input type="password" name="password" required></input>
             <button id="validateBtn" type="button" onclick="submitForm()">Conferma</button>
         </form>
     </div>
     <div id="success" style="word-break: break-word;"></div>
+    <div id="finalDiv" style="display: none; margin-top: 10px;">
+        <button onclick="copyLink()" id="copyBtn" style="margin-top: 10px">Copia il link</button>
+        <p id="copied-message" class="copied-message">Link copiato!</p>
+        <button onclick="reloadPage()" id="reloadPage" style="margin-top: 10px; background-color: #b85e32;">Gerera un'altro link</button>
+    </div>
 </div>
     <script>
+        function reloadPage() {
+            window.location.reload();
+        }
+        function copyLink() {
+        // Il link che vuoi copiare
+        const link = document.getElementById('success').innerText;
+
+        // Crea un elemento di input temporaneo per copiare il testo
+        const tempInput = document.createElement('input');
+        tempInput.value = link;
+        document.body.appendChild(tempInput);
+
+        // Seleziona il testo e copia negli appunti
+        tempInput.select();
+        document.execCommand('copy');
+
+        // Rimuove l'elemento temporaneo
+        document.body.removeChild(tempInput);
+
+        // Mostra un messaggio di conferma (opzionale)
+        document.getElementById('copied-message').style.display = 'block';
+
+        // Nascondi il messaggio dopo 2 secondi
+        setTimeout(() => {
+            document.getElementById('copied-message').style.display = 'none';
+        }, 2000);
+        }
         function submitForm() {
             document.getElementById('validateBtn').disabled = true;
             var form = document.getElementById('ticketForm');
@@ -413,10 +447,8 @@ const generateEvent = (req, res) => {
         },
                 body: JSON.stringify({
                     event: formData.get('event'),
-                    description: formData.get('description'),
                     where: formData.get('where'),
                     when: formData.get('when'),
-                    password: formData.get('password')
                 })
             })
             .then(response => response.json())
@@ -426,6 +458,7 @@ const generateEvent = (req, res) => {
                 if (data.status === 200) {
                     document.getElementById('formFields').style.display = 'none';
                     document.getElementById('success').innerText = data.message;
+                    document.getElementById('finalDiv').style.display = 'inline-grid';
                 } else {
                     alert(data.message);
                 }

@@ -222,9 +222,9 @@ async function handlePayment(req, res) {
 const generateEvent = async (req, res) => {
   try {
     console.log("[CONTROLLER][GENERATE-EVENT] start");
-    const { event, description, where, when, amount, informations, password } =
+    const { event, description, where, when, amount, informations } =
       req.body;
-    if (!event || !where || !when || !password) {
+    if (!event || !where || !when) {
       return res.status(400).json({
         message: "Completa tutti i campi",
         status: 400,
@@ -234,12 +234,6 @@ const generateEvent = async (req, res) => {
       return res.status(400).json({
         message: "Formato data non valido, formato atteso: MM/DD/YYYY HH:mm",
         status: 400,
-      });
-    }
-    if (password !== process.env.PASSWORD) {
-      return res.status(401).json({
-        message: "Password non valida",
-        status: 401,
       });
     }
     /*
@@ -252,15 +246,15 @@ const generateEvent = async (req, res) => {
       console.log("Product Price: ", price);
     }
     */
-    const productUpdated = await stripe.products.update(
-      process.env.STRIPE_PRODUCT_ID,
-      {
-        name: event,
-        description,
-        metadata: { where, when },
-      }
-    );
-    console.log("Product Updated: ", productUpdated);
+    //const productUpdated = await stripe.products.update(
+    //  process.env.STRIPE_PRODUCT_ID,
+    //  {
+    //    name: event,
+    //    description,
+    //    metadata: { where, when },
+    //  }
+    //);
+    //console.log("Product Updated: ", productUpdated);
     console.log("[CONTROLLER][GENERATE-EVENT] end");
     const giftcardLink = `${
       process.env.BASE_URL
@@ -268,7 +262,7 @@ const generateEvent = async (req, res) => {
       event
     )}&where=${encodeURIComponent(where)}&when=${encodeURIComponent(when)}`;
     return res.status(200).send({
-      message: `Stripe: ${process.env.STRIPE_PAYMENT_LINK}\n\n Giftcard: ${giftcardLink}`,
+      message: giftcardLink,
       status: 200,
     });
   } catch (err) {
