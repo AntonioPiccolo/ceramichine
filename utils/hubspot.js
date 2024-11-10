@@ -69,7 +69,8 @@ const searchFromHubspot = async (
   properties = [],
   after = 0,
   limit = 1,
-  sorts = []
+  sorts = [],
+  all = false
 ) => {
   const objectSearchRequest = {
     filterGroups: filterGroups,
@@ -87,6 +88,9 @@ const searchFromHubspot = async (
   const json = await response.json();
   if (!json?.results || json.results.length == 0) {
     return null;
+  }
+  if (all) {
+    return json.results;
   }
   return json.results[0];
 };
