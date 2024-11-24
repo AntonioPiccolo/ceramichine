@@ -22,7 +22,7 @@ const getEvents = async (req, res) => {
             ],
             },
         ],
-        ['ticket', 'ticket_validation'],
+        ['ticket', 'ticket_validation', 'gift_card'],
         0,
         100,
         null,
@@ -44,7 +44,8 @@ const getEvents = async (req, res) => {
                 }
                 return {
                     Ticket: event.properties.ticket,
-                    Validato: event.properties.ticket_validation ? formattedDate.replace(',', '') : ''
+                    Validato: event.properties.ticket_validation ? formattedDate.replace(',', '') : '',
+                    GiftCard: event.properties.gift_card ? 'X' : ''
                 }
             })
         }
