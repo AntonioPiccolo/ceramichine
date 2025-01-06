@@ -100,24 +100,52 @@ const form = (req, res) => {
             <label for="instagram">Instagram:</label>
             <input type="instagram" name="instagram" required>
 
+            <label for="foundUs">Come ci hai conosciuto:</label>
+            <select name="foundUs" id="foundUs" style="margin-bottom: 10px;" required>
+                <option value=" "> </option>
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Google">Google</option>
+                <option value="Amici">Amici</option>
+                <option value="Altro">Altro</option>
+            </select>
+            <input type="text" name="foundUsAltro" id="foundUsAltro" placeholder="Specifica Altro" style="display: none; margin-top: 10px;">
+
             <label for="ticket">Codice Biglietto:</label>
             <input name="ticket" required></input>
 
+            <p style="font-size: 12px; color: #555; margin-bottom: 10px;">
+                *Convalidando il biglietto acconsenti alla condivisione delle informazioni con Ceramichine.
+            </p>
             <button id="validateBtn" type="button" onclick="submitForm()">Convalida</button>
         </form>
     </div>
 </div>
     <script>
+        document.getElementById('foundUs').addEventListener('change', function() {
+            var altroField = document.getElementById('foundUsAltro');
+            if (this.value === 'Altro') {
+                altroField.style.display = 'block';
+            } else {
+                altroField.style.display = 'none';
+            }
+        });
+
         function submitForm() {
             document.getElementById('validateBtn').disabled = true;
             var form = document.getElementById('ticketForm');
             var formData = new FormData(form);
 
+            var foundUsValue = formData.get('foundUs');
+            if (foundUsValue === 'Altro') {
+                foundUsValue = formData.get('foundUsAltro');
+            }
+
             fetch('${process.env.BASE_URL}/api/ticket', {
                 method: 'POST',
-                        headers: {
-            'Content-Type': 'application/json'
-        },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     email: formData.get('email'),
                     firstname: formData.get('firstname'),
@@ -125,7 +153,8 @@ const form = (req, res) => {
                     city: formData.get('city'),
                     phone: formData.get('phone'),
                     instagram: formData.get('instagram'),
-                    ticket: formData.get('ticket')
+                    ticket: formData.get('ticket'),
+                    foundUs: foundUsValue
                 })
             })
             .then(response => response.json())

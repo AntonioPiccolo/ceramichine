@@ -6,7 +6,7 @@ const { invertDate } = require("../utils/utils");
 const verify = async (req, res) => {
   try {
     console.log("[CONTROLLER][TICKET-VERIFY] start");
-    const { email, firstname, lastname, city, phone, ticket, instagram } =
+    const { email, firstname, lastname, city, phone, ticket, instagram, foundUs } =
       req.body;
     if (!email) {
       return res
@@ -16,7 +16,7 @@ const verify = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Email non valida", status: 400 });
     }
-    if (!firstname || !lastname || !city || !phone) {
+    if (!firstname || !lastname || !city || !phone || !foundUs || foundUs === " ") {
       return res
         .status(400)
         .json({ message: "Completa tutti i campi", status: 400 });
@@ -37,6 +37,7 @@ const verify = async (req, res) => {
       lastname: lastname,
       phone,
       city,
+      company: foundUs
     };
     if (!contact) {
       contact = await hubspot.createToHubspot("contacts", {
