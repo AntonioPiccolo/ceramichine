@@ -101,7 +101,7 @@ const form = (req, res) => {
             <input type="instagram" name="instagram" required>
 
             <label for="foundUs">Come ci hai conosciuto:</label>
-            <select name="foundUs" id="foundUs" style="margin-bottom: 10px;" required>
+            <select name="foundUs" id="foundUs" style="margin-bottom: 10px; min-width: 200px; height: 40px; text-align: center; line-height: 40px;" required>
                 <option value=" "> </option>
                 <option value="Instagram">Instagram</option>
                 <option value="TikTok">TikTok</option>
