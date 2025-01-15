@@ -24,7 +24,7 @@ const getEvents = async (req, res) => {
         ],
         ['ticket', 'ticket_validation', 'gift_card'],
         0,
-        100,
+        200,
         null,
         true
         );
@@ -76,7 +76,7 @@ const getFutureEvents = async (req, res) => {
             ],
             ['event_name', 'when'],
             0,
-            100,
+            200,
             null,
             true
         );
